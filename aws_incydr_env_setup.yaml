@@ -1,0 +1,77 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Template for provisioning test EC2 instances with Mimecast Incydr agents in Singapore region'
+
+Parameters:
+  KeyName:
+    Type: String
+    Default: MC-INC-KP
+    Description: Name of the key pair
+  InstanceType:
+    Type: String
+    Default: t2.micro
+    AllowedValues:
+      - t2.micro
+      - t2.small
+      - t3.micro
+    Description: EC2 instance type
+
+Resources:
+  MySecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow RDP and SSH
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 3389
+          ToPort: 3389
+          CidrIp: 0.0.0.0/0
+
+  WindowsInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-0f845a2bba44d24b2  # Windows Server 2019 Base in ap-southeast-1
+      InstanceType: !Ref InstanceType
+      KeyName: !Ref KeyName
+      SecurityGroups:
+        - !Ref MySecurityGroup
+      UserData:
+        Fn::Base64: |
+          <powershell>
+          $url = "https://raw.githubusercontent.com/V01dArk/mc-incydr-resources/main/code42-aat_1.12.21.33_win64.exe"
+          $path = "C:\Temp\installer.exe"
+          New-Item -ItemType Directory -Force -Path C:\Temp
+          Invoke-WebRequest -Uri $url -OutFile $path
+          Start-Process -FilePath $path -ArgumentList "DEPLOYMENT_URL=https://console.au.code42.com DEPLOYMENT_POLICY_TOKEN=ed06b48a-b58c-4954-89ef-5463a773e40f DEPLOYMENT_SECRET=vMmN+0APzqIGWDhYYPJqptag0+3aLxQiU7mOZlVsTMSgDK0vaffNdaAeycr3jth= /install /quiet /norestart" -Wait
+          </powershell>
+
+  RHELInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-0b1e356e  # RHEL 8 in ap-southeast-1
+      InstanceType: !Ref InstanceType
+      KeyName: !Ref KeyName
+      SecurityGroups:
+        - !Ref MySecurityGroup
+      UserData:
+        Fn::Base64: |
+          #!/bin/bash
+          yum update -y
+          wget https://raw.githubusercontent.com/V01dArk/mc-incydr-resources/main/code42-aat-1.12.21-33.el8.x86_64.rpm -O /tmp/installer.rpm
+          wget https://raw.githubusercontent.com/V01dArk/mc-incydr-resources/main/code42.deployment.properties -O /tmp/code42.deployment.properties
+          sudo dnf install -y /tmp/installer.rpm
+
+Outputs:
+  WindowsInstanceId:
+    Description: Instance ID of the Windows Server instance
+    Value: !Ref WindowsInstance
+    Export:
+      Name: WindowsInstanceId
+  RHELInstanceId:
+    Description: Instance ID of the RHEL instance
+    Value: !Ref RHELInstance
+    Export:
+      Name: RHELInstanceId
