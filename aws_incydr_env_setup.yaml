@@ -45,7 +45,7 @@ Resources:
           $path = "C:\Temp\installer.exe"
           New-Item -ItemType Directory -Force -Path C:\Temp
           Invoke-WebRequest -Uri $url -OutFile $path
-          Start-Process -FilePath $path -ArgumentList "DEPLOYMENT_URL=https://console.au.code42.com DEPLOYMENT_POLICY_TOKEN=ed06b48a-b58c-4954-89ef-5463a773e40f DEPLOYMENT_SECRET=vMmN+0APzqIGWDhYYPJqptag0+3aLxQiU7mOZlVsTMSgDK0vaffNdaAeycr3jth= /install /quiet /norestart" -Wait
+          Start-Process -FilePath $path -ArgumentList "DEPLOYMENT_URL=https://console.au.code42.com DEPLOYMENT_POLICY_TOKEN=<Insert_Deployment_Policy_Token> DEPLOYMENT_SECRET=<Insert_Deployment_Secret> /install /quiet /norestart" -Wait
           # Install Google Chrome
           $chromeUrl = "https://dl.google.com/chrome/install/latest/chrome_installer.exe"
           $chromePath = "C:\Temp\chrome_installer.exe"
