@@ -16,7 +16,7 @@ Parameters:
     Description: EC2 instance type
 
 Resources:
-  MySecurityGroup:
+  MCSecGrp:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Allow RDP and SSH
@@ -37,7 +37,7 @@ Resources:
       InstanceType: !Ref InstanceType
       KeyName: !Ref KeyName
       SecurityGroups:
-        - !Ref MySecurityGroup
+        - !Ref McSecGrp
       UserData:
         Fn::Base64: |
           <powershell>
@@ -55,7 +55,7 @@ Resources:
       InstanceType: !Ref InstanceType
       KeyName: !Ref KeyName
       SecurityGroups:
-        - !Ref MySecurityGroup
+        - !Ref McSecGrp
       UserData:
         Fn::Base64: |
           #!/bin/bash
