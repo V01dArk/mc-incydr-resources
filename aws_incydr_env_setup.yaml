@@ -42,7 +42,7 @@ Resources:
         Fn::Base64: |
           <powershell>
           $url = "https://raw.githubusercontent.com/V01dArk/mc-incydr-resources/main/code42-aat_1.12.21.33_win64.exe"
-          $path = "C:\Temp\installer.exe"
+          $path = "C:\Temp\code42-aat_1.12.21.33_win64.exe"
           New-Item -ItemType Directory -Force -Path C:\Temp
           Invoke-WebRequest -Uri $url -OutFile $path
           Start-Process -FilePath $path -ArgumentList "DEPLOYMENT_URL=https://console.au.code42.com DEPLOYMENT_POLICY_TOKEN=ed06b48a-b58c-4954-89ef-5463a773e40f DEPLOYMENT_SECRET=vMmN+0APzqIGWDhYYPJqptag0+3aLxQiU7mOZlVsTMSgDK0vaffNdaAeycr3jth= /install /quiet /norestart" -Wait
@@ -60,9 +60,9 @@ Resources:
         Fn::Base64: |
           #!/bin/bash
           yum update -y
-          wget https://raw.githubusercontent.com/V01dArk/mc-incydr-resources/main/code42-aat-1.12.21-33.el8.x86_64.rpm -O /tmp/installer.rpm
+          wget https://raw.githubusercontent.com/V01dArk/mc-incydr-resources/main/code42-aat-1.12.21-33.el8.x86_64.rpm -O /tmp/code42-aat-1.12.21-33.el8.x86_64.rpm
           wget https://raw.githubusercontent.com/V01dArk/mc-incydr-resources/main/code42.deployment.properties -O /tmp/code42.deployment.properties
-          sudo dnf install -y /tmp/installer.rpm
+          sudo dnf install -y /tmp/code42-aat-1.12.21-33.el8.x86_64.rpm
 
 Outputs:
   WindowsInstanceId:
